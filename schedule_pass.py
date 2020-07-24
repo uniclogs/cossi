@@ -70,7 +70,6 @@ class Schedule_Pass:
         """ Helper function to send attribute info to Cosmos interface
             to schedule passes. Called by cancel_all().
         """
-
         set_replay_mode(False)
         connect_interface('ENGR_LINK_INT')
         print('\nsending CANCEL command...\n{}\n'\
