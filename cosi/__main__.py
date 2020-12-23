@@ -1,4 +1,3 @@
-import sys
 import re
 import time
 import datetime
@@ -127,37 +126,45 @@ def main():
                         dest='latest_tle',
                         nargs=1,
                         metavar=('(NORAD ID|SATELLITE NAME)'),
-                        help='[Default: 43793 (CSim)] Displays the latest TLE stored in DART DB either by Norad ID or by satellite name')
+                        help='[Default: 43793 (CSim)] Displays the latest TLE'
+                             ' stored in DART DB either by Norad ID or by'
+                             ' satellite name')
     parser.add_argument('-n', '--norad-id',
                         dest='norad_id',
                         type=int,
                         default=43793,
-                        help='[Default: 43793 (CSim)] Norad Satellite ID to use when fetching TLE and Telemetry')
+                        help='[Default: 43793 (CSim)] Norad Satellite ID to'
+                             ' use when fetching TLE and Telemetry')
     parser.add_argument('--no-satellite',
                         dest='no_satellite',
                         action='store_true',
                         default=False,
-                        help='Disables fetching the latest satellite info from https://db.satnogs.org')
+                        help='Disables fetching the latest satellite info from'
+                             ' https://db.satnogs.org')
     parser.add_argument('--no-telemetry',
                         dest='no_telemetry',
                         action='store_true',
                         default=False,
-                        help='Disables fetching the latest telemetry from https://db.satnogs.org')
+                        help='Disables fetching the latest telemetry from'
+                             ' https://db.satnogs.org')
     parser.add_argument('--no-tle',
                         dest='no_tle',
                         action='store_true',
                         default=False,
-                        help='Disables fetching the latest Two Line Element (TLE) from https://space-track.org')
+                        help='Disables fetching the latest Two Line Element'
+                             ' (TLE) from https://space-track.org')
     parser.add_argument('-o', '--once',
                         dest='once',
                         action='store_true',
                         default=False,
-                        help='Runs a cycle once instead of looping every poll interval')
+                        help='Runs a cycle once instead of looping every poll'
+                             ' interval')
     parser.add_argument('-p', '--poll-interval',
                         dest='poll_interval',
                         type=str,
                         default='30m',
-                        help='[Default: 30m] Time interval at which CoSI polls spacetrack and satnogs for data')
+                        help='[Default: 30m] Time interval at which CoSI polls'
+                             ' spacetrack and satnogs for data')
     parser.add_argument('-v', '--verbose',
                         dest='debug',
                         action='store_true',
