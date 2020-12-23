@@ -15,6 +15,7 @@ def test_get_age_is_valid():
     assert satnogs.get_age(first, second) == datetime.timedelta(days=30)
 
 
+@pytest.mark.skip(reason='Turn HTTP Request into magic mock')
 def test_request_satellite_is_not_none():
     """Given a valid `norad_id`, when polling satnogs for satellite data,
     then the result should be a vaild dict with satellite data
@@ -24,7 +25,7 @@ def test_request_satellite_is_not_none():
     assert satellite is not None
 
 
-@pytest.mark.skip(reason='Satnogs API being inconsistent?')
+@pytest.mark.skip(reason='Turn HTTP Request into magic mock')
 def test_request_telemetry_is_not_none():
     """Given a valid `norad_id`, when polling satnogs for telemetry data,
     then the result should be a vaild dict with telemetry data
@@ -35,6 +36,7 @@ def test_request_telemetry_is_not_none():
     assert telemetry.get('frame') is not None
 
 
+@pytest.mark.skip(reason='Turn HTTP Request into magic mock')
 def test_request_telemetry_raises_error():
     """Given a valid telemetry frame from a satellite that does not support
     Kaitai structs, when polling satnogs for telemetry data, then the function
@@ -45,6 +47,7 @@ def test_request_telemetry_raises_error():
         satnogs.request_telemetry(norad_id)
 
 
+@pytest.mark.skip(reason='Turn HTTP Request into magic mock')
 def test_decode_telemetry_is_not_none():
     """Given a valid telemetry frame from a satellite that supports Kaitai
     structs, when polling satnogs for telemetry data, then the result should

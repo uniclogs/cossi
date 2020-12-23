@@ -4,6 +4,19 @@ import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 
+# Version Details
+MAJOR = 2
+MINOR = 0
+PATCH = 0
+
+# Application details
+APP_NAME = 'uniclogs-cosi'
+APP_VERSION = f'{MAJOR}.{MINOR}.{PATCH}'
+APP_AUTHOR = 'Dmitri McGuckin'
+APP_LICENSE = 'GPLv3'
+APP_DESCRIPTION = 'Cosmos Satnogs/SpaceTrack Interface'
+APP_URL = 'https://github.com/oresat/uniclogs-cosi'
+
 # Dart DB constants
 DB_HOST = os.getenv('DART_HOST')
 try:
