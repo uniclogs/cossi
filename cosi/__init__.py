@@ -4,7 +4,7 @@ import datetime
 # Version Details
 MAJOR = 0
 MINOR = 0
-PATCH = 1
+PATCH = 2
 
 # Application details
 APP_NAME = 'uniclogs-cosi'
