@@ -1,5 +1,5 @@
-import cosi as c
 import setuptools
+import cosi as c
 
 with open('README.md', 'r') as f:
     long_description = f.read()
@@ -31,8 +31,13 @@ setuptools.setup(
     ],
     extras_require={
         "dev": [
+            "setuptools",
+            "wheel",
             "pytest",
-            "wheel"
+            "flake8",
+            "twine",
+            "sphinx",
+            "sphinx_rtd_theme",
         ]
     },
     python_requires='>=3.8.5',

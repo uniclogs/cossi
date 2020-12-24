@@ -2,9 +2,22 @@ import re
 import time
 import datetime
 import argparse
-import cosi.models as models
+import cosi as c
+import sqlalchemy
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+import cosi.models as m
 import cosi.satnogs as satnogs
 import cosi.spacetrack as spacetrack
+
+Base = declarative_base()
+db_url = 'postgresql://{}:{}@{}:{}/{}'.format(c.DB_USERNAME,
+                                              c.DB_PASSWORD,
+                                              c.DB_HOST,
+                                              c.DB_PORT,
+                                              c.DB_NAME)
+engine = create_engine(db_url)
+DartSession = sqlalchemy.orm.sessionmaker(bind=engine)
 
 
 def parse_poll_interval(poll_interval: str) -> int:
@@ -33,21 +46,20 @@ def parse_poll_interval(poll_interval: str) -> int:
     elif(re.match('[0-9]+s', poll_interval) is not None):
         timedelta = datetime.timedelta(seconds=int(poll_interval[:-1]))
     else:
-        raise ValueError('Bad poll interval value: {}.\
-                        \n\tPoll interval must follow pattern: [0-9]+(d|h|m|s)\
-                        \n\tEx: --poll-interval 12h or --poll-interval 30m'
-                         .format(poll_interval))
+        raise ValueError(f'Bad poll interval value: {poll_interval}.\n\tPoll'
+                         ' interval must follow pattern: [0-9]+(d|h|m|s)'
+                         '\n\tEx: --poll-interval 12h or --poll-interval 30m')
     return timedelta.total_seconds()
 
 
 def fetch_tle(args: list):
     tle = spacetrack.request_tle(args.norad_id)
-    tle = models.TLE(header_text=tle.get('TLE_LINE0'),
-                     first_line=tle.get('TLE_LINE1'),
-                     second_line=tle.get('TLE_LINE2'))
+    tle = m.TLE(header_text=tle.get('TLE_LINE0'),
+                first_line=tle.get('TLE_LINE1'),
+                second_line=tle.get('TLE_LINE2'))
     if(args.debug):
         print('\nInserting {} into db...'.format(tle))
-    models.inject_tle(tle)
+    m.inject_tle(tle)
 
 
 def fetch_satellite(args: list):
@@ -58,24 +70,24 @@ def fetch_satellite(args: list):
 
 def fetch_telemetry(args: list):
     # Get latest telemetry
-    encoded_telemetry = satnogs.request_telemetry(args.norad_id)
-    frame = bytearray.fromhex(encoded_telemetry.get('frame'))
+    encoded = satnogs.request_telemetry(args.norad_id)
+    frame = bytearray.fromhex(encoded.get('frame'))
     if(args.debug):
-        print('\nEncoded telemetry: {}'.format(encoded_telemetry))
+        print('\nEncoded telemetry: {}'.format(encoded))
 
     # Decode telemetry
-    decoded_telemetry = satnogs.decode_telemetry_frame(frame)
+    decoded = satnogs.decode_telemetry_frame(frame)
     if(args.debug):
-        print('\nDecoded telemetry: {}'.format(decoded_telemetry))
+        print('\nDecoded telemetry: {}'.format(decoded))
 
     # Send data to the db
     try:
-        magentometer_telemetry = models.Telemetry(invalid_count=decoded_telemetry.mag_invalid_count,
-                                                  sensor_used=decoded_telemetry.mag_sensor_used,
-                                                  vector_body_1=decoded_telemetry.mag_vector_body1,
-                                                  vector_body_2=decoded_telemetry.mag_vector_body2,
-                                                  vector_body_3=decoded_telemetry.mag_vector_body3,
-                                                  vector_valid=decoded_telemetry.mag_vector_valid)
+        magentometer = m.Telemetry(invalid_count=decoded.mag_invalid_count,
+                                   sensor_used=decoded.mag_sensor_used,
+                                   vector_body_1=decoded.mag_vector_body1,
+                                   vector_body_2=decoded.mag_vector_body2,
+                                   vector_body_3=decoded.mag_vector_body3,
+                                   vector_valid=decoded.mag_vector_valid)
     except AttributeError as e:
         print('\nFailed to decode telemetry: {}'.format(e))
         return
@@ -83,8 +95,8 @@ def fetch_telemetry(args: list):
     try:
         if(args.debug):
             print('Injecting telemetry into the DB: {}'
-                  .format(magentometer_telemetry))
-            status = models.inject_telemetry(magentometer_telemetry)
+                  .format(magentometer))
+            status = m.inject_telemetry(magentometer)
             if(args.debug and status):
                 print('\nSuccesfully injected!')
             else:
@@ -92,7 +104,7 @@ def fetch_telemetry(args: list):
     except Exception:
         if(args.debug):
             print('\nFailed to inject telemetry frame into DB: {}'
-                  .format(magentometer_telemetry))
+                  .format(magentometer))
 
 
 def cycle(args):
@@ -110,10 +122,10 @@ def cycle(args):
     if(args.latest_tle is not None):
         try:
             norad_id = int(args.latest_tle[0])
-            tle = models.get_latest_tle_by_id(norad_id)
+            tle = m.get_latest_tle_by_id(norad_id)
         except ValueError:
             satellite_name = args.latest_tle[0]
-            tle = models.get_latest_tle_by_name(satellite_name)
+            tle = m.get_latest_tle_by_name(satellite_name)
         print('Latest TLE: {}'.format(tle))
 
 

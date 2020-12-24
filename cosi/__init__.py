@@ -1,13 +1,10 @@
 import os
 import datetime
-import sqlalchemy
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
 
 # Version Details
-MAJOR = 2
+MAJOR = 0
 MINOR = 0
-PATCH = 0
+PATCH = 1
 
 # Application details
 APP_NAME = 'uniclogs-cosi'
@@ -46,12 +43,3 @@ SPACETRACK_TLE = SPACETRACK_URL \
 
 
 STALE_TLE_DURATION = datetime.timedelta(days=1)
-
-Base = declarative_base()
-db_url = 'postgresql://{}:{}@{}:{}/{}'.format(DB_USERNAME,
-                                              DB_PASSWORD,
-                                              DB_HOST,
-                                              DB_PORT,
-                                              DB_NAME)
-engine = create_engine(db_url)
-DartSession = sqlalchemy.orm.sessionmaker(bind=engine)
