@@ -4,7 +4,7 @@ from datetime import timedelta
 # Version Details
 MAJOR = 1
 MINOR = 0
-PATCH = 0
+PATCH = 1
 
 # Application information
 APP_NAME = 'uniclogs-cosi'
@@ -25,7 +25,7 @@ DB_PASSWORD = os.getenv('DART_PASSWORD')
 
 # Satnogs constants
 SATNOGS_TOKEN = os.getenv('SATNOGS_DB_TOKEN')
-SATNOGS_API = 'https://db-dev.satnogs.org/api'
+SATNOGS_API = 'https://db.satnogs.org/api'
 SATNOGS_SATELITE_ENDPOINT = f'{SATNOGS_API}/satellites/''{}/?format=json'
 SATNOGS_TELEMETRY_ENDPOINT = f'{SATNOGS_API}/telemetry/?satellite=' \
                              '{}&format=json'

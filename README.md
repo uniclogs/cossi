@@ -1,95 +1,96 @@
-# CoSI
+# Cosmos-SatNOGS-SpaceTrack-Interface [CoS/SI]
 
-Cosmos Satnogs/SpaceTrack Interface
+[![license](https://img.shields.io/github/license/oresat/uniclogs-cosi)](./LICENSE)
+[![pypi](https://img.shields.io/pypi/v/uniclogs-cosi)](https://pypi.org/project/uniclogs-cosi/)
+[![read the docs](https://img.shields.io/readthedocs/uniclogs-cosi)](https://uniclogs-cosi.readthedocs.io)
+[![issues](https://img.shields.io/github/issues/oresat/uniclogs-cosi/bug)](https://github.com/oresat/uniclogs-cosi/labels/bug)
+[![unit tests](https://img.shields.io/github/workflow/status/oresat/uniclogs-cosi/Unit%20Tests)](https://github.com/oresat/uniclogs-cosi/actions/workflows/unit-tests.yaml)
+[![deployment](https://img.shields.io/github/workflow/status/oresat/uniclogs-cosi/Deploy%20to%20PyPi)](https://github.com/oresat/uniclogs-cosi/actions/workflows/deployment.yaml)
+
+An application for fetching the latest relevant satellite metadata and telemetry from SatNOGSs' and Space-Tracks' API's for immediate digestion by the Portland State Aerospace Society's UniClOGS server and respective services.
 
 ***
 
-# Prerequisite Services:
+# Quick Start
 
-These services are expected to be running before `cosi-runner` can start.
+### Installation
 
-* Mock OreSat
-* COSMOS Command and Telemetry Server *(managed via Docker image)*
-* COSMOS DART Service *(managed via Docker image)*
-* PostgreSQL Daemon
+`$` `pip install uniclogs-cosi`
 
+### Environment Variables
 
-## Mock Oresat
+Certain environment variables are required depending on which features are needed.
 
-A mock of OreSat has been provided to stand in place of the actual satellite when integrating COSMOS tools into development.
+**SpaceTrack:**
 
-**Start Mock-OreSat:**
+These are required in order to fetch the latest TLE data.
 
-`$` `python3 ./cosmos/mocks/oresat.py`
+*(See: Space-Track's [faq](https://www.space-track.org/documentation#howto) for setting up authentication)*
 
-## COSMOS Install
+* `SPACETRACK_USERNAME`
+* `SPACETRACK_PASSWORD`
 
-A docker image has been provided to make the development experience more seamless while allowing COSMOS to operate in the environment it needs. This docker image is based off the official [BallAerospace COSMOS Image](https://hub.docker.com/r/ballaerospace/cosmos) but has been modified to include configurations and settings needed for UniClOGS.
+**SatNOGS:**
 
-**Install and run `ms-cosmos` from DockerHub:**
+These are required in order to fetch satellite metadata and telemetry.
 
-`$` `docker pull dmitrimcguuckin/ms-cosmos`
+*(See: SatNOGS's [api page](https://db.satnogs.org/api) for setting up authentication)*
 
-`$` `docker run --tty --interactive --detach --name cosmos --network=host --ipc=host --env DART_DB=$DART_DB --env DART_USERNAME=$COSI_USERNAME --env DART_PASSWORD=$COSI_PASSWORD --env DISPLAY=$DISPLAY --volume $XAUTH:/root/.Xauthority --volume /var/run/postgresql/.s.PGSQL.5432:/var/run/postgresql/.s.PGSQL.5432 dmitrimcguuckin/ms-cosmos`
+* `SATNOGS_DB_TOKEN`
 
-`$` `docker attach cosmos`
+**COSMOS DART:**
 
-**Note:** *The variables beginning with DART are expected to exist by COSMOS, and can be provided either manually or they can be exported as environment variables in a `.bashrc` file. Either way, they are required in order to forward the details to the container and to COSMOS.*
+These are required in order to submit data to COSMOS ground-station services, such as DART.
 
-## PostgreSQL
+* `DART_HOST`
+* `DART_PORT`
+* `DART_DB`
+* `DART_USERNAME`
+* `DART_PASSWORD`
 
-Visit the [official PostgreSQL website](https://www.postgresql.org/download/) for instructions on how best to install on your system.
+### Run
 
+`$` `uniclogs-cosi`
 
-## CoSI Runner
+*(Help and usage)*
 
-#### Installation
+`$` `uniclogs-cosi --help`
 
-`$` `pip install -r requirements.txt`
+### Examples
 
-#### Development Dependencies Installation
+In order to use COSI, it requires a known NORAD ID of an active satellite that is at least registered in [SatNOGS](https://db.satnogs.org) if you wish to grab satellite metadata and telemetry and [Space-Track](https://www.space-track.org) if you wish to grab a satellite's latest TLE's.
 
-`$` `pip install -r dev-requirements.txt`
-
-#### Unit Tests
-
-`$` `pytest tests/*`
-
-#### Usage
-
-```
-usage: cosi-runner [-h] [--latest-tle (NORAD ID|SATELLITE NAME)] [-n NORAD_ID] [--no-satellite] [--no-telemetry]
-[--no-tle] [-p POLL_INTERVAL] [-v]
-
-Daemon for CoSI.
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --latest-tle (NORAD ID|SATELLITE NAME)
-    [Default: 43793 (CSim)] Displays the latest TLE stored in DART DB either by Norad ID or by
-satellite name
-  -n NORAD_ID, --norad-id NORAD_ID
-    [Default: 43793 (CSim)] Norad Satellite ID to use when fetching TLE and Telemetry
-  --no-satellite        Disables fetching the latest satellite info from https://db.satnogs.org
-  --no-telemetry        Disables fetching the latest telemetry from https://db.satnogs.org
-  --no-tle              Disables fetching the latest Two Line Element (TLE) from https://space-track.org
-  -p POLL_INTERVAL, --poll-interval POLL_INTERVAL
-    [Default: 30m] Time interval at which CoSI polls spacetrack and satnogs for data
-  -v, --verbose         Enable additional debug information
-```
-
-#### Example Commands
-
-**Run CoSI with the Norad ID 965 every 10 minutes**
-
-`$` `./cosi-runner --norad-id 965 -p 10m`
+*([Register with SatNOGS here](https://wiki.satnogs.orgSatellite_Operator_Guide#2.2_Add_a_new_Mission))*
 
 
-**Run CoSI every hour skipping fetching satellite info**
+**Get Latest TLE for Bobcat-1** *(NORAD ID: 46922)*
 
-`$` `./cosi-runner -p 1h --no-satellite`
+`$` `uniclogs-cosi --get-tle 46922`
 
-**Useful Links:**
+**Get Satellite Metadata and telemetry for Bobcat-1**
 
-* [`ballcosmos` Infinite Wait Fix](https://github.com/BallAerospace/python-ballcosmos/commit/377552e91ffafea76acedee8cb7ada1abc202898)
-* [`ballcosmos` Commands Demonstration](https://github.com/BallAerospace/python-ballcosmos/blob/master/examples/test_json_drb.py)
+`$` `uniclogs-cosi --get-telemetry --get-satellite 46922`
+
+**Get Telemetry for Bobcat-1 but Skip Decoding**
+
+`$` `uniclogs-cosi --get-telemetry --no-decode 46922`
+
+***
+
+# Development and Contribution
+
+### Documentation
+
+Check out our [Read The Docs](https://uniclogs-software.readthedocs.io) pages for more info on the applications and the various systems it interacts with.
+
+### Install Locally
+
+`$` `pip install -e .[dev]`
+
+*(Note: the `-e` flag creates a symbolic-link to your local development version. Set it once, and forget it)*
+
+### Create Documentation Locally
+
+`$` `make -C docs clean html`
+
+*(Note: documentation is configured to auto-build with ReadTheDocs on every push to master)*

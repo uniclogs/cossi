@@ -1,6 +1,10 @@
 import json
 import argparse
-from . import APP_NAME, APP_DESCRIPTION
+from . import APP_NAME, \
+              APP_DESCRIPTION, \
+              SATNOGS_API, \
+              SATNOGS_SATELITE_ENDPOINT, \
+              SATNOGS_TELEMETRY_ENDPOINT
 from .satnogs import request_satellite, \
                      request_telemetry, \
                      decode_telemetry_frame
@@ -45,6 +49,13 @@ def main():
                         help='Specify the location to write the satellite'
                              ' metadata to. Used in conjunction with'
                              ' `--get-satellite`.')
+    parser.add_argument('--satnogs-dev',
+                        dest='use_satnogs_dev',
+                        action='store_true',
+                        default=False,
+                        help='Toggle the API endpoint for SatNOGS to db-dev and'
+                             ' network-dev instead of the defaults db and'
+                             ' network respectively.')
     parser.add_argument('--telemetry-path',
                         dest='telemetry_path',
                         type=str,
@@ -59,13 +70,23 @@ def main():
                              ' Used in conjunction with `--get-tle`.')
     args = parser.parse_args()
 
+    if(args.use_satnogs_dev):
+        api = 'https://db-dev.satnogs.org/api'
+        satellite_endpoint = f'{api}/satellites/''{}/?format=json'
+        telemetry_endpoint = f'{api}/telemetry/?satellite=''{}&format=json'
+    else:
+        satellite_endpoint = SATNOGS_SATELITE_ENDPOINT
+        telemetry_endpoint = SATNOGS_TELEMETRY_ENDPOINT
+
     if(args.get_satellite):
-        satellite = request_satellite(args.norad_id)
+        satellite = request_satellite(args.norad_id,
+                                      endpoint=satellite_endpoint)
         with open(args.satellite_path, 'w+') as file:
             json.dump(satellite, file, indent=4, sort_keys=True)
 
     if(args.get_telemetry):
-        telemetry = request_telemetry(args.norad_id)
+        telemetry = request_telemetry(args.norad_id,
+                                      endpoint=telemetry_endpoint)
         frame = telemetry.get('frame', None)
         if(frame is None):
             raise ValueError(f'Did not find a raw Frame for Satellite #{args.norad_id}: {telemetry}')

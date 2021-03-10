@@ -41,7 +41,8 @@ def get_age(first: datetime.datetime,
     return second - first
 
 
-def request_satellite(norad_id: int = None) -> dict:
+def request_satellite(norad_id: int = None,
+                      endpoint: str = SATNOGS_SATELITE_ENDPOINT) -> dict:
     """Makes a request to satnogs for metadata on the satellite specified by
     Norad ID
 
@@ -61,13 +62,15 @@ def request_satellite(norad_id: int = None) -> dict:
     headers = {'Accept': 'application/json',
                'Content-Type': 'application/json'}
     parameters = {'format': 'json', 'norad_cat_id': str(norad_id)}
-    return requests.get(SATNOGS_SATELITE_ENDPOINT.format(norad_id),
+    endpoint = endpoint.format(norad_id)
+    return requests.get(endpoint,
                         headers=headers,
                         params=parameters,
                         allow_redirects=True).json()
 
 
-def request_telemetry(norad_id: int = None) -> dict:
+def request_telemetry(norad_id: int = None,
+                      endpoint: str = SATNOGS_TELEMETRY_ENDPOINT) -> dict:
     """Makes a request to satnogs.org for the raw telemetry frame of the
     satellite specified by Norad ID
 
@@ -100,7 +103,8 @@ def request_telemetry(norad_id: int = None) -> dict:
     headers = {'Authorization': "Token " + SATNOGS_TOKEN,
                'Content-Type': 'application/json'}
     parameters = {'format': 'json', 'norad_cat_id': str(norad_id)}
-    response = requests.get(SATNOGS_TELEMETRY_ENDPOINT.format(norad_id),
+    endpoint = endpoint.format(norad_id)
+    response = requests.get(endpoint,
                             headers=headers,
                             params=parameters,
                             allow_redirects=True)
@@ -111,8 +115,7 @@ def request_telemetry(norad_id: int = None) -> dict:
         else:
             return response.json()[0]
     else:
-        raise ValueError('Non-200 response from satnogs: {}'
-                         .format(response))
+        raise ValueError(f'{response.status_code} response from {endpoint}: {response.reason}')
 
 
 def decode_telemetry_frame(telemetry_frame: bytes) -> Oreflat0.Ax25InfoData:
