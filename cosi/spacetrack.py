@@ -1,6 +1,9 @@
 import requests
 import json
-import cosi
+from . import SPACETRACK_USERNAME, \
+              SPACETRACK_PASSWORD, \
+              SPACETRACK_LOGIN_ENDPOINT, \
+              SPACETRACK_TLE_ENDPOINT
 
 
 class TLERequestFailed(Exception):
@@ -49,23 +52,23 @@ def request_tle(norad_id: int) -> dict:
     * Bad request header
     * No TLEs found for requested satellite
     """
-    if(cosi.SPACETRACK_USERNAME is None):
+    if(SPACETRACK_USERNAME is None):
         raise EnvironmentError("Enviromnemt Variable {} is not defined!"
                                .format('SPACETRACK_USERNAME'))
-    if(cosi.SPACETRACK_PASSWORD is None):
+    if(SPACETRACK_PASSWORD is None):
         raise EnvironmentError("Enviromnemt Variable {} is not defined!"
                                .format('SPACETRACK_PASSWORD'))
 
-    credentials = {'identity': cosi.SPACETRACK_USERNAME,
-                   'password': cosi.SPACETRACK_PASSWORD}
+    credentials = {'identity': SPACETRACK_USERNAME,
+                   'password': SPACETRACK_PASSWORD}
     data = []
 
     with requests.Session() as session:
-        res = session.post(cosi.SPACETRACK_LOGIN, data=credentials)
+        res = session.post(SPACETRACK_LOGIN_ENDPOINT, data=credentials)
         if res.status_code != 200:
             raise TLERequestFailed("Bad credentials!", res)
 
-        res = session.get(cosi.SPACETRACK_TLE.format(norad_id))
+        res = session.get(SPACETRACK_TLE_ENDPOINT.format(norad_id))
         if res.status_code != 200:
             raise TLERequestFailed("Bad request!", res)
         data = json.loads(res.text)

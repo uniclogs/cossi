@@ -1,8 +1,10 @@
 import requests
 import datetime
-import cosi
-import cosi.structs.csim as csim
 from pytz import utc
+from .structs import Oreflat0
+from . import SATNOGS_TOKEN, \
+              SATNOGS_SATELITE_ENDPOINT, \
+              SATNOGS_TELEMETRY_ENDPOINT
 
 
 class NoDecoderForTelemetryFrame(Exception):
@@ -59,7 +61,7 @@ def request_satellite(norad_id: int = None) -> dict:
     headers = {'Accept': 'application/json',
                'Content-Type': 'application/json'}
     parameters = {'format': 'json', 'norad_cat_id': str(norad_id)}
-    return requests.get(cosi.SATNOGS_SATELITE.format(norad_id),
+    return requests.get(SATNOGS_SATELITE_ENDPOINT.format(norad_id),
                         headers=headers,
                         params=parameters,
                         allow_redirects=True).json()
@@ -91,14 +93,14 @@ def request_telemetry(norad_id: int = None) -> dict:
     `socket.gaierror`: Raises this when there's an error with\
     the HTTP request to satnogs
     """
-    if(cosi.SATNOGS_TOKEN is None):
+    if(SATNOGS_TOKEN is None):
         raise ValueError("Enviromnemt Variable {} is not defined!"
                          .format('SATNOGS_TOKEN'))
 
-    headers = {'Authorization': "Token " + cosi.SATNOGS_TOKEN,
+    headers = {'Authorization': "Token " + SATNOGS_TOKEN,
                'Content-Type': 'application/json'}
     parameters = {'format': 'json', 'norad_cat_id': str(norad_id)}
-    response = requests.get(cosi.SATNOGS_TELEMETRY.format(norad_id),
+    response = requests.get(SATNOGS_TELEMETRY_ENDPOINT.format(norad_id),
                             headers=headers,
                             params=parameters,
                             allow_redirects=True)
@@ -113,7 +115,7 @@ def request_telemetry(norad_id: int = None) -> dict:
                          .format(response))
 
 
-def decode_telemetry_frame(telemetry_frame: bytes) -> csim.Csim.BeaconLong:
+def decode_telemetry_frame(telemetry_frame: bytes) -> Oreflat0.Ax25InfoData:
     """Takes a raw and encoded telemetry frame and decodes it according to a
     provided Kaitai Struct
 
@@ -123,15 +125,8 @@ def decode_telemetry_frame(telemetry_frame: bytes) -> csim.Csim.BeaconLong:
 
     Returns
     -------
-    `csim.Csim.BeaconLong`: The decoder object with all of the aptly decoded\
-    telemetry, *(only returns a `csim.Csim.BeaconLong` since it's the only\
+    `Oreflat0.BeaconLong`: The decoder object with all of the aptly decoded\
+    telemetry, *(only returns a `Oreflat0.BeaconLong` since it's the only\
     supportable decoder right now)*
     """
-    payload = csim.Csim.from_bytes(telemetry_frame) \
-                       .ax25_frame \
-                       .payload \
-                       .ax25_info
-    if(type(payload) is csim.Csim.BeaconLong):
-        return payload
-    else:
-        return None
+    return Oreflat0.ax25_frame.payload.ax25_info

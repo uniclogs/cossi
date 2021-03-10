@@ -1,9 +1,30 @@
 import datetime
-import cosi
-from sqlalchemy import Column, Text, DateTime, Integer, Sequence, Boolean
+from . import DB_USERNAME, \
+              DB_PASSWORD, \
+              DB_HOST, \
+              DB_PORT, \
+              DB_NAME
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, \
+                       Text, \
+                       DateTime, \
+                       Integer, \
+                       Sequence, \
+                       Boolean, \
+                       create_engine, \
+                       orm
+
+Base = declarative_base()
+db_url = 'postgresql://{}:{}@{}:{}/{}'.format(DB_USERNAME,
+                                              DB_PASSWORD,
+                                              DB_HOST,
+                                              DB_PORT,
+                                              DB_NAME)
+engine = create_engine(db_url)
+DartSession = orm.sessionmaker(bind=engine)
 
 
-class TLE(cosi.Base):
+class TLE(Base):
     """Models a TLE according to the schema established in DartDB
 
     Attributes
@@ -29,7 +50,7 @@ class TLE(cosi.Base):
                                                self.second_line)
 
 
-class Telemetry(cosi.Base):
+class Telemetry(Base):
     """
     Used to model the telemetry table in database.
     This models a many-to-many relationship between Request and User
@@ -53,17 +74,17 @@ class Telemetry(cosi.Base):
     vector_valid = Column(Boolean)
 
 
-def new_db_session() -> cosi.DartSession:
+def new_db_session() -> DartSession:
     """Re-binds the cosi engine to the SQLAlchemy ORM engine and
     creates a new active session with the DART DB
 
     Returns
     -------
-    `cosi.DartSession`: A live DART DB session (derived from
+    `DartSession`: A live DART DB session (derived from
     sqlalchemy.session)
     """
-    cosi.Base.metadata.bind = cosi.engine
-    return cosi.DartSession(autocommit=True)
+    Base.metadata.bind = engine
+    return DartSession(autocommit=True)
 
 
 def inject_tle(tle: TLE) -> bool:
