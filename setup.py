@@ -38,7 +38,6 @@ setuptools.setup(
         "dev": [
             "setuptools",
             "wheel",
-            "pytest",
             "flake8",
             "twine",
             "sphinx",

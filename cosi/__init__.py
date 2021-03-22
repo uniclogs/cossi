@@ -24,7 +24,7 @@ DB_USERNAME = getenv('DART_USERNAME')
 DB_PASSWORD = getenv('DART_PASSWORD')
 
 # Satnogs constants
-SATNOGS_TOKEN = getenv('SATNOGS_DB_TOKEN')
+SATNOGS_DB_TOKEN = getenv('SATNOGS_DB_TOKEN')
 SATNOGS_API = 'https://db.satnogs.org/api'
 SATNOGS_DEV_API = 'https://db-dev.satnogs.org/api'
 SATNOGS_SATELITE_ENDPOINT = '/satellites'

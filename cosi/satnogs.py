@@ -2,7 +2,7 @@ import requests
 from .decoders import Oreflat0
 from . import assert_env, \
               dictify, \
-              SATNOGS_TOKEN, \
+              SATNOGS_DB_TOKEN, \
               SATNOGS_API, \
               SATNOGS_DEV_API, \
               SATNOGS_SATELITE_ENDPOINT, \
@@ -30,6 +30,7 @@ def request_satellite(norad_id: int = None, satnogs_dev: bool = False) -> dict:
     :rtype: dict
     """
     headers = {
+        'Authorization': "Token " + SATNOGS_DB_TOKEN,
         'Accept': 'application/json',
         'Content-Type': 'application/json'
     }
@@ -70,7 +71,8 @@ def request_telemetry(norad_id: int, satnogs_dev: bool = False) -> dict:
     :rtype: dict
     """
     headers = {
-        'Authorization': "Token " + SATNOGS_TOKEN,
+        'Authorization': "Token " + SATNOGS_DB_TOKEN,
+        'Accept': 'application/json',
         'Content-Type': 'application/json'
     }
     parameters = {
