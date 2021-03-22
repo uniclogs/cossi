@@ -1,80 +1,68 @@
 import requests
-import json
-from . import SPACETRACK_USERNAME, \
+from . import assert_env, \
+              SPACETRACK_USERNAME, \
               SPACETRACK_PASSWORD, \
+              SPACETRACK_API, \
               SPACETRACK_LOGIN_ENDPOINT, \
-              SPACETRACK_TLE_ENDPOINT
+              SPACETRACK_TLE_ENDPOINT, \
+              FailedAPIRequest
 
 
-class TLERequestFailed(Exception):
-    """An error specification.
-    This is thrown when a satellite is retrieved from Satnogs, but the decoder
-    for it is unknown/unavailable, hence making it imposible to decode the
-    telemetry frame.
+@assert_env('SPACETRACK_USERNAME')
+@assert_env('SPACETRACK_PASSWORD')
+def create_spacetrack_session() -> requests.Session:
+    """Attempts to open a session with the space-track.org API with given
+    credentials
 
-    Attributes
-    ---------
-    reason: `str` In-length details about what broke.
-    response: `dict` The HTTP response body from spacetrack
+    :raises EnvironmentError: if the environment variable `SPACETRACK_USERNAME`
+        is not defined
+    :raises EnvironmentError: if the environment variable `SPACETRACK_PASSWORD`
+        is not defined
+    :raises FailedAPIRequest: if the authentication request to the SpaceTrack
+        API failed
+
+    :return: A succesfully authenticated session with API
+    :rtype: requests.Session
     """
+    endpoint = f'{SPACETRACK_API}{SPACETRACK_LOGIN_ENDPOINT}'
+    credentials = {
+        'identity': SPACETRACK_USERNAME,
+        'password': SPACETRACK_PASSWORD
+    }
 
-    def __init___(self, reason: str, response: dict):
-        super().__init__(self, "TLE request failure: " + reason
-                         + '\n\tResponse Body: ' + str(response))
-        self.response = response
+    session = requests.Session()
+    res = session.post(endpoint, credentials)
+    if(not res.ok):
+        raise FailedAPIRequest(res)
+    return session
 
 
-def request_tle(norad_id: int) -> dict:
+def request_tle(norad_id: int) -> tuple:
     """Makes a request to space-track.org for the latest TLE of a satellite
     specified by Norad ID.
 
-    Parameters
-    ----------
-    norad_id: `int` A unique satellite identifier
+    :param norad_id: The satellite's unique identifier
+    :type norad_id: int
 
-    Returns
-    -------
-    dict:
-    * "TLE_LINE0": `str` TLE header
-    * "TLE_LINE1": `str` TLE first line or entry
-    * "TLE_LINE2": `str` TLE second line or entry
+    :raises FailedAPIRequest: if the HTTP request to space-track.org failed
 
-    Raises
-    ------
-    `EnvironmentError`: Raises this if one or more of of the following
-    environment variables are not defined
-    * `SPACETRACK_USERNAME`
-    * `SPACETRACK_PASSWORD`
-
-    `TLERequestFailed`: Raises this if any non-200 resonse was recieved
-    from spacetrack
-    * Bad credentials
-    * Bad request header
-    * No TLEs found for requested satellite
+    :return: A tuple of the ordered two-line element
+    :rtype: tuple
     """
-    if(SPACETRACK_USERNAME is None):
-        raise EnvironmentError("Enviromnemt Variable {} is not defined!"
-                               .format('SPACETRACK_USERNAME'))
-    if(SPACETRACK_PASSWORD is None):
-        raise EnvironmentError("Enviromnemt Variable {} is not defined!"
-                               .format('SPACETRACK_PASSWORD'))
+    with create_spacetrack_session() as session:
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+        endpoint = f'{SPACETRACK_API}' \
+                   f'{SPACETRACK_TLE_ENDPOINT.format(norad_id)}'
+        res = session.get(endpoint, headers=headers)
+        if(not res.ok):
+            raise FailedAPIRequest(res)
 
-    credentials = {'identity': SPACETRACK_USERNAME,
-                   'password': SPACETRACK_PASSWORD}
-    data = []
-
-    with requests.Session() as session:
-        res = session.post(SPACETRACK_LOGIN_ENDPOINT, data=credentials)
-        if res.status_code != 200:
-            raise TLERequestFailed("Bad credentials!", res)
-
-        res = session.get(SPACETRACK_TLE_ENDPOINT.format(norad_id))
-        if res.status_code != 200:
-            raise TLERequestFailed("Bad request!", res)
-        data = json.loads(res.text)
-        if(len(data) > 0):
-            data = data[0]
-        else:
-            raise TLERequestFailed('No TLEs found for satellite: ({}: {})'
-                                   .format(norad_id, data))
-    return data
+        data = res.json()
+        if(len(data) == 0):
+            raise FailedAPIRequest(res,
+                                   message='No TLE\'s found for NORAD ID'
+                                           f' #{norad_id}')
+        return tuple(list(data[0].values())[1:])

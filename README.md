@@ -1,4 +1,4 @@
-# Cosmos-SatNOGS-SpaceTrack-Interface [CoS/SI]
+# Cosmos-SatNOGS-SpaceTrack-Interface [CoSSI]
 
 [![license](https://img.shields.io/github/license/oresat/uniclogs-cosi)](./LICENSE)
 [![pypi](https://img.shields.io/pypi/v/uniclogs-cosi)](https://pypi.org/project/uniclogs-cosi/)
@@ -60,20 +60,20 @@ These are required in order to submit data to COSMOS ground-station services, su
 
 In order to use COSI, it requires a known NORAD ID of an active satellite that is at least registered in [SatNOGS](https://db.satnogs.org) if you wish to grab satellite metadata and telemetry and [Space-Track](https://www.space-track.org) if you wish to grab a satellite's latest TLE's.
 
-*([Register with SatNOGS here](https://wiki.satnogs.orgSatellite_Operator_Guide#2.2_Add_a_new_Mission))*
+*([Register with SatNOGS here](https://wiki.satnogs.org/Satellite_Operator_Guide#2.2_Add_a_new_Mission))*
 
 
-**Get Latest TLE for Bobcat-1** *(NORAD ID: 46922)*
+**Get Latest TLE for Bobcat-1:** *(NORAD ID: 46922)*
 
-`$` `uniclogs-cosi --get-tle 46922`
+`$` `uniclogs-cosi --tle 46922`
 
-**Get Satellite Metadata and telemetry for Bobcat-1**
+**Get Satellite Metadata and telemetry for Bobcat-1:**
 
-`$` `uniclogs-cosi --get-telemetry --get-satellite 46922`
+`$` `uniclogs-cosi --satellite --telemetry 46922`
 
-**Get Telemetry for Bobcat-1 but Skip Decoding**
+**Get Telemetry for OreFlat0 in SatNOGS DB Dev and decode it using the OreFlat0 decoder:**
 
-`$` `uniclogs-cosi --get-telemetry --no-decode 46922`
+`$` `uniclogs-cosi --telemetry --decode --satnogs-dev 99910`
 
 ***
 

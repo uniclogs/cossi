@@ -1,24 +1,22 @@
-.. uniclogs-cosi documentation master file, created by
-   sphinx-quickstart on Wed Mar 10 00:30:52 2021.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to the Uniclogs CoSSI documentation!
-============================================
-
-An application for fetching the latest relevant satellite metadata and telemetry from SatNOGSs' and Space-Tracks' API's for immediate digestion by the Portland State Aerospace Society's UniClOGS server and respective services.
+COSMOS SpaceTrack/SatNOGSs Interface
+====================================
 
 .. warning::
-    This is still a work in progress.
+    Work In Progress
 
-If you're interested in a high-level explanation of the UniClOGS Server and the various services this application interacts with, checkout the `UniClOGS Software Documentation <https://uniclogs-software.readthedocs.io>`_
+This is the set of development reference documents for CoSSI.
 
-This set of documents only pertains to development, specifications-tracking, and usage of the CoSI service.
+.. seealso:: This set of documents only pertains to development, specifications-tracking, and usage of the CoSI service. If you're looking for a high-level explanation of how CoSSI is used by the UniClOGS Server see the official `UniClOGS Server Documentation <https://uniclogs-software.readthedocs.io>`_.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
+   quick-start
+
+.. toctree::
+   :maxdepth: 2
+
+   development
 
 Indices and tables
 ==================

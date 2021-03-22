@@ -17,7 +17,7 @@ class Oreflat0(KaitaiStruct):
     :field ctl: ax25_frame.ax25_header.ctl
     :field pid: ax25_frame.payload.pid
     :field monitor: ax25_frame.payload.ax25_info.dummy_data
-
+    
     Attention: `rpt_callsign` cannot be accessed because `rpt_instance` is an
     array of unknown size at the beginning of the parsing process! Left an
     example in here.
@@ -184,3 +184,6 @@ class Oreflat0(KaitaiStruct):
 
         def _read(self):
             self.dummy_data = (self._io.read_bytes(67)).decode(u"utf-8")
+
+
+
