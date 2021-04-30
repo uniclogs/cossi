@@ -1,7 +1,7 @@
 import os
 import unittest
-import cosi.satnogs as satnogs
-from cosi import FailedAPIRequest
+import cossi.satnogs as satnogs
+from cossi import FailedAPIRequest
 from unittest.mock import MagicMock
 
 

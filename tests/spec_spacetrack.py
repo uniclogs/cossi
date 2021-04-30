@@ -1,7 +1,7 @@
 import os
 import unittest
 from unittest.mock import MagicMock
-import cosi.spacetrack as spacetrack
+import cossi.spacetrack as spacetrack
 
 
 class SpaceTrack_Spec(unittest.TestCase):

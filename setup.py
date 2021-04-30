@@ -1,5 +1,5 @@
 import setuptools
-import cosi as c
+import cossi as c
 
 with open('README.md', 'r') as f:
     long_description = f.read()

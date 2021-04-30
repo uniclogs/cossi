@@ -1,7 +1,7 @@
 # Cosmos-SatNOGS-SpaceTrack-Interface [CoSSI]
 
 [![license](https://img.shields.io/github/license/oresat/uniclogs-cosi)](./LICENSE)
-[![pypi](https://img.shields.io/pypi/v/uniclogs-cosi)](https://pypi.org/project/uniclogs-cosi/)
+[![pypi](https://img.shields.io/pypi/v/uniclogs-cossi)](https://pypi.org/project/uniclogs-cossi/)
 [![read the docs](https://img.shields.io/readthedocs/uniclogs-cosi)](https://uniclogs-cosi.readthedocs.io)
 [![issues](https://img.shields.io/github/issues/oresat/uniclogs-cosi/bug)](https://github.com/oresat/uniclogs-cosi/labels/bug)
 [![unit tests](https://img.shields.io/github/workflow/status/oresat/uniclogs-cosi/Unit%20Tests)](https://github.com/oresat/uniclogs-cosi/actions/workflows/unit-tests.yaml)
