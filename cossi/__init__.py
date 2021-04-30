@@ -4,14 +4,14 @@ from os import environ, getenv
 # Version Details
 MAJOR = 2
 MINOR = 0
-PATCH = 0
+PATCH = 2
 
 # Application information
-APP_NAME = 'uniclogs-cosi'
+APP_NAME = 'uniclogs-cossi'
 APP_VERSION = f'{MAJOR}.{MINOR}.{PATCH}'
 APP_AUTHOR = 'Dmitri McGuckin'
 APP_LICENSE = 'GPLv3'
-APP_DESCRIPTION = 'Cosmos Satnogs/SpaceTrack Interface. An application for' \
+APP_DESCRIPTION = 'Cosmos Satnogs-SpaceTrack Interface. An application for' \
                   ' fetching the latest relevant satellite metadata and' \
                   ' telemetry from SatNOGSs\' and Space-Tracks\' API\'s'
 APP_URL = 'https://github.com/oresat/uniclogs-cosi'

@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath('.'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'uniclogs-cosi'
+project = 'uniclogs-cossi'
 copyright = '2021, Portland State Aerospace Society'
 author = 'Portland State Aerospace Society'
 

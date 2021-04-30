@@ -1,7 +1,7 @@
 import os
 import pytest
-import cosi
-import cosi.spacetrack as spacetrack
+import cossi
+import cossi.spacetrack as spacetrack
 import sys
 
 sys.path.insert(0, '..')
@@ -36,7 +36,7 @@ def test_request_tle_raises_error_on_no_username():
     function should raise an EnvironmentError exception
     """
     norad_id = 965
-    cosi.SPACETRACK_USERNAME = None
+    cossi.SPACETRACK_USERNAME = None
     with pytest.raises(EnvironmentError):
         spacetrack.request_tle(norad_id)
 
@@ -47,7 +47,7 @@ def test_request_tle_raises_error_on_no_password():
     function should raise an EnvironmentError exception
     """
     norad_id = 965
-    cosi.SPACETRACK_PASSWORD = None
+    cossi.SPACETRACK_PASSWORD = None
     with pytest.raises(EnvironmentError):
         spacetrack.request_tle(norad_id)
 
@@ -58,8 +58,8 @@ def test_request_tle_raises_error_on_bad_username():
     the function should raise an TLERequestFailed exception
     """
     norad_id = 965
-    cosi.SPACETRACK_USERNAME = 'badusername'
-    cosi.SPACETRACK_PASSWORD = os.getenv('SPACETRACK_PASSWORD')
+    cossi.SPACETRACK_USERNAME = 'badusername'
+    cossi.SPACETRACK_PASSWORD = os.getenv('SPACETRACK_PASSWORD')
     with pytest.raises(spacetrack.TLERequestFailed):
         spacetrack.request_tle(norad_id)
 
@@ -70,7 +70,7 @@ def test_request_tle_raises_error_on_bad_password():
     the function should raise an TLERequestFailed exception
     """
     norad_id = 965
-    cosi.SPACETRACK_USERNAME = os.getenv('SPACETRACK_USERNAME')
-    cosi.SPACETRACK_PASSWORD = 'badpassword'
+    cossi.SPACETRACK_USERNAME = os.getenv('SPACETRACK_USERNAME')
+    cossi.SPACETRACK_PASSWORD = 'badpassword'
     with pytest.raises(spacetrack.TLERequestFailed):
         spacetrack.request_tle(norad_id)
