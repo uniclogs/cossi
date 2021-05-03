@@ -2,6 +2,7 @@ import os
 import unittest
 import cossi.satnogs as satnogs
 from cossi import FailedAPIRequest
+from cossi.decoders import Decoder
 from unittest.mock import MagicMock
 
 
@@ -191,7 +192,7 @@ class Satnogs_Spec(unittest.TestCase):
             "dummy_data": ":KJ7SAT - Test beacon from AX5043 driver. Sun Jan 13 21:38:52 1980\n"
         }
         frame = self.fake_frame.get('frame')
-        decoded = satnogs.decode_telemetry_frame(frame)
+        decoded = satnogs.decode_telemetry_frame(frame, Decoder.OREFLAT0)
         self.assertEqual(decoded, expected)
 
     def test_decode_invalid_telemetry(self):
@@ -201,4 +202,4 @@ class Satnogs_Spec(unittest.TestCase):
         """
         frame = '00AABBCCDDEEFF'
         with self.assertRaises(ValueError):
-            satnogs.decode_telemetry_frame(frame)
+            satnogs.decode_telemetry_frame(frame, Decoder.OREFLAT0)

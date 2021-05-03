@@ -1,6 +1,7 @@
 import json
 import argparse
 from . import APP_NAME, APP_DESCRIPTION
+from .decoders import Decoder
 from .satnogs import request_satellite, \
                      request_telemetry, \
                      decode_telemetry_frame
@@ -16,9 +17,9 @@ def main():
                         help='The satellite NORAD ID to search by when'
                              ' fetching TLE\'s or telemetry.')
     parser.add_argument('--decode', '-d',
-                        dest='decode',
-                        action='store_true',
-                        default=False,
+                        dest='decoder',
+                        type=str.upper,
+                        choices={'CSIM', 'OREFLAT0', 'ORESAT0'},
                         help='Attempt to decode telemetry fetched from SatNOGS'
                              ' DB.')
     parser.add_argument('--decode-output', '--do',
@@ -87,8 +88,8 @@ def main():
         with open(args.telemetry_output, 'w+') as file:
             json.dump(telemetry, file, indent=4, sort_keys=True)
 
-        if(args.decode):
-            decoded_data = decode_telemetry_frame(frame)
+        if(args.decoder):
+            decoded_data = decode_telemetry_frame(frame, Decoder[args.decoder])
             with open(args.decoded_data_output, 'w+') as file:
                 json.dump(decoded_data, file, indent=4, sort_keys=True)
 

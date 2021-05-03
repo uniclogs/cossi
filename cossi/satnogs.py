@@ -1,5 +1,5 @@
 import requests
-from .decoders import Oreflat0
+from .decoders import Csim, Decoder, Oreflat0, Oresat0
 from . import assert_env, \
               dictify, \
               SATNOGS_DB_TOKEN, \
@@ -96,7 +96,7 @@ def request_telemetry(norad_id: int, satnogs_dev: bool = False) -> dict:
     return observations[0]
 
 
-def decode_telemetry_frame(hex_frame: str) -> dict:
+def decode_telemetry_frame(hex_frame: str, decoder: Decoder) -> dict:
     """Takes a hex-string of telemetry and decodes it using the default
     Oreflat0 Decoder.
 
@@ -111,10 +111,11 @@ def decode_telemetry_frame(hex_frame: str) -> dict:
     :return: A dctionary of the decoded data
     :rtype: dict
     """
+    decoder_class = decoder.value
     raw_bytes = bytearray.fromhex(hex_frame)
-    payload = Oreflat0.from_bytes(raw_bytes) \
-                      .ax25_frame \
-                      .payload.ax25_info
+    payload = decoder_class.from_bytes(raw_bytes) \
+                           .ax25_frame \
+                           .payload.ax25_info
     if(not payload):
         raise ValueError('No payload found!')
     return dictify(payload, depth=3, ignore_private=True)

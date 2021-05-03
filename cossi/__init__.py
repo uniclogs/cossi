@@ -3,8 +3,8 @@ from os import environ, getenv
 
 # Version Details
 MAJOR = 2
-MINOR = 0
-PATCH = 2
+MINOR = 1
+PATCH = 0
 
 # Application information
 APP_NAME = 'uniclogs-cossi'
