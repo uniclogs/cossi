@@ -47,7 +47,7 @@ setuptools.setup(
     python_requires='>=3.8.5',
     entry_points={
         "console_scripts": [
-            f'{c.APP_NAME} = cosi.__main__:main',
+            f'{c.APP_NAME} = cossi.__main__:main',
         ]
     }
 )
