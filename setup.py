@@ -15,7 +15,7 @@ setuptools.setup(
     url=c.APP_URL,
     project_urls={
         'Documentation': 'https://uniclogs-cosi.readthedocs.io',
-        'Bug Tracking': 'https://github.com/oresat/uniclogs-cosi/labels/bug'
+        'Bug Tracking': 'https://github.com/oresat/uniclogs-cossi/labels/bug'
     },
     packages=setuptools.find_packages(),
     classifiers=[

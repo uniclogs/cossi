@@ -1,11 +1,11 @@
 # Cosmos-SatNOGS-SpaceTrack-Interface [CoSSI]
 
-[![license](https://img.shields.io/github/license/oresat/uniclogs-cosi)](./LICENSE)
+[![license](https://img.shields.io/github/license/oresat/uniclogs-cossi)](./LICENSE)
 [![pypi](https://img.shields.io/pypi/v/uniclogs-cossi)](https://pypi.org/project/uniclogs-cossi/)
-[![read the docs](https://img.shields.io/readthedocs/uniclogs-cosi)](https://uniclogs-cosi.readthedocs.io)
-[![issues](https://img.shields.io/github/issues/oresat/uniclogs-cosi/bug)](https://github.com/oresat/uniclogs-cosi/labels/bug)
-[![unit tests](https://img.shields.io/github/workflow/status/oresat/uniclogs-cosi/Unit%20Tests)](https://github.com/oresat/uniclogs-cosi/actions/workflows/unit-tests.yaml)
-[![deployment](https://img.shields.io/github/workflow/status/oresat/uniclogs-cosi/Deploy%20to%20PyPi)](https://github.com/oresat/uniclogs-cosi/actions/workflows/deployment.yaml)
+[![read the docs](https://img.shields.io/readthedocs/uniclogs-cossi)](https://uniclogs-cossi.readthedocs.io)
+[![issues](https://img.shields.io/github/issues/oresat/uniclogs-cossi/bug)](https://github.com/oresat/uniclogs-cossi/labels/bug)
+[![unit tests](https://img.shields.io/github/workflow/status/oresat/uniclogs-cossi/Unit%20Tests)](https://github.com/oresat/uniclogs-cossi/actions/workflows/unit-tests.yaml)
+[![deployment](https://img.shields.io/github/workflow/status/oresat/uniclogs-cossi/Deploy%20to%20PyPi)](https://github.com/oresat/uniclogs-cossi/actions/workflows/deployment.yaml)
 
 An application for fetching the latest relevant satellite metadata and telemetry from SatNOGSs' and Space-Tracks' API's for immediate digestion by the Portland State Aerospace Society's UniClOGS server and respective services.
 
@@ -15,7 +15,7 @@ An application for fetching the latest relevant satellite metadata and telemetry
 
 ### Installation
 
-`$` `pip install uniclogs-cosi`
+`$` `pip install uniclogs-cossi`
 
 ### Environment Variables
 
@@ -50,11 +50,11 @@ These are required in order to submit data to COSMOS ground-station services, su
 
 ### Run
 
-`$` `uniclogs-cosi`
+`$` `uniclogs-cossi`
 
 *(Help and usage)*
 
-`$` `uniclogs-cosi --help`
+`$` `uniclogs-cossi --help`
 
 ### Examples
 
@@ -65,15 +65,15 @@ In order to use COSI, it requires a known NORAD ID of an active satellite that i
 
 **Get Latest TLE for Bobcat-1:** *(NORAD ID: 46922)*
 
-`$` `uniclogs-cosi --tle 46922`
+`$` `uniclogs-cossi --tle 46922`
 
 **Get Satellite Metadata and telemetry for Bobcat-1:**
 
-`$` `uniclogs-cosi --satellite --telemetry 46922`
+`$` `uniclogs-cossi --satellite-metadata --telemetry 46922`
 
 **Get Telemetry for OreFlat0 in SatNOGS DB Dev and decode it using the OreFlat0 decoder:**
 
-`$` `uniclogs-cosi --telemetry --decode --satnogs-dev 99910`
+`$` `uniclogs-cossi --telemetry --decode --satnogs-dev 99910`
 
 ***
 

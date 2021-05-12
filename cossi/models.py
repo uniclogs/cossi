@@ -75,7 +75,7 @@ class Telemetry(Base):
 
 
 def new_db_session() -> DartSession:
-    """Re-binds the cosi engine to the SQLAlchemy ORM engine and
+    """Re-binds the cossi engine to the SQLAlchemy ORM engine and
     creates a new active session with the DART DB
 
     Returns
