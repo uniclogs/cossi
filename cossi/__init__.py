@@ -4,7 +4,7 @@ from os import environ, getenv
 # Version Details
 MAJOR = 2
 MINOR = 1
-PATCH = 1
+PATCH = 2
 
 # Application information
 APP_NAME = 'uniclogs-cossi'
@@ -14,7 +14,7 @@ APP_LICENSE = 'GPLv3'
 APP_DESCRIPTION = 'Cosmos Satnogs-SpaceTrack Interface. An application for' \
                   ' fetching the latest relevant satellite metadata and' \
                   ' telemetry from SatNOGSs\' and Space-Tracks\' API\'s'
-APP_URL = 'https://github.com/oresat/uniclogs-cosi'
+APP_URL = 'https://github.com/oresat/uniclogs-cossi'
 
 # Dart DB constants
 DB_HOST = getenv('DART_HOST')
